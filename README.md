@@ -17,7 +17,7 @@ It supports comparative experimentation across benchmark FSM models, combining:
 
 Main entry points:
 
-- [ExperimentalPrototype README](/Users/goncalomiranda/Documents/MEI/2ano/PREPD/PREPD/ExperimentalPrototype/README.md)
+- [Experimental Prototype README](ExperimentalPrototype/README.md)
 - `ExperimentalPrototype/ExperimentalPrototype.sln`
 
 ### `FinalArtefact`
@@ -31,7 +31,7 @@ It executes a single configured pipeline over a target FSM model and exports:
 
 Main entry points:
 
-- [FinalArtefact README](/Users/goncalomiranda/Documents/MEI/2ano/PREPD/PREPD/FinalArtefact/README.md)
+- [Final Artefact README](FinalArtefact/README.md)
 - `FinalArtefact/FinalArtefact.sln`
 
 ## Prerequisites
