@@ -1,0 +1,80 @@
+name: Generate FSM Test Suite
+
+on:
+  push:
+    paths:
+      - 'FinalArtefact/**'
+      - 'Shared/**'
+      - 'toolconfig.json'
+  pull_request:
+    paths:
+      - 'FinalArtefact/**'
+      - 'Shared/**'
+      - 'toolconfig.json'
+  workflow_dispatch:
+    inputs:
+      config:
+        description: 'Path to configuration file (relative to repo root)'
+        required: false
+        default: 'toolconfig.json'
+
+jobs:
+  generate-tests:
+    name: Generate and validate FSM test suite
+    runs-on: ubuntu-latest
+    env:
+      FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup .NET 8
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.0.x'
+
+      - name: Restore dependencies
+        run: dotnet restore FinalArtefact/FinalArtefact.sln
+
+      - name: Build solution
+        run: dotnet build FinalArtefact/FinalArtefact.sln --no-restore --configuration Release
+
+      - name: Generate test suite
+        working-directory: FinalArtefact
+        run: |
+          dotnet run \
+            --project FinalArtefact.csproj \
+            --configuration Release \
+            --no-build \
+            -- "${{ github.event.inputs.config || 'toolconfig.json' }}"
+
+      - name: Verify outputs exist
+        run: |
+          test -f FinalArtefact/out/test_suite.json    || (echo "test_suite.json not generated" && exit 1)
+          test -f FinalArtefact/out/metrics_report.json || (echo "metrics_report.json not generated" && exit 1)
+          echo "Generated test cases: $(jq '.testCases | length' FinalArtefact/out/test_suite.json)"
+          echo "Post-reduction mutation score: $(jq '.mutationMetrics.postReductionMutationScore' FinalArtefact/out/metrics_report.json)"
+
+      - name: Upload test suite
+        uses: actions/upload-artifact@v4
+        with:
+          name: fsm-test-suite
+          path: |
+            FinalArtefact/out/test_suite.json
+            FinalArtefact/out/metrics_report.json
+          retention-days: 30
+
+      - name: Report metrics summary
+        if: always()
+        run: |
+          if [ -f FinalArtefact/out/metrics_report.json ]; then
+            echo "### FSM Test Suite Metrics" >> $GITHUB_STEP_SUMMARY
+            echo "| Metric | Value |" >> $GITHUB_STEP_SUMMARY
+            echo "|--------|-------|" >> $GITHUB_STEP_SUMMARY
+            echo "| Suite size | $(jq '.suiteMetrics.suiteSize' FinalArtefact/out/metrics_report.json) |" >> $GITHUB_STEP_SUMMARY
+            echo "| Transition coverage | $(jq '.suiteMetrics.transitionCoverage' FinalArtefact/out/metrics_report.json) |" >> $GITHUB_STEP_SUMMARY
+            echo "| Post-reduction mutation score | $(jq '.mutationMetrics.postReductionMutationScore' FinalArtefact/out/metrics_report.json) |" >> $GITHUB_STEP_SUMMARY
+            echo "| Adjusted mutation score | $(jq '.mutationMetrics.adjustedMutationScore' FinalArtefact/out/metrics_report.json) |" >> $GITHUB_STEP_SUMMARY
+            echo "| APFD | $(jq '.suiteMetrics.apfd' FinalArtefact/out/metrics_report.json) |" >> $GITHUB_STEP_SUMMARY
+          fi
