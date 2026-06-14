@@ -1,0 +1,39 @@
+{
+  "fsmName": "TcpConnectionFSM",
+  "generatedAt": "2026-06-14T13:12:16.3432000Z",
+  "configuration": {
+    "coverageStrategy": "TransitionPairCoverage",
+    "reductionStrategy": "MutationScorePreserving",
+    "prioritisationStrategy": "CoverageBasedPrioritization"
+  },
+  "suiteMetrics": {
+    "suiteSize": 14,
+    "totalSteps": 57,
+    "preReductionSuiteSize": 34,
+    "preReductionTotalSteps": 132,
+    "reductionRatio": 0.5882,
+    "executionTimeSavings": 0.5682,
+    "stateCoverage": 1,
+    "transitionCoverage": 1,
+    "apfd": 0.7947,
+    "generationTimeMs": 45.44
+  },
+  "mutationMetrics": {
+    "preReductionMutationScore": 0.8361,
+    "postReductionMutationScore": 0.8361,
+    "adjustedMutationScore": 1,
+    "totalMutants": 671,
+    "killedMutants": 561,
+    "strategyUnreachableMutants": 110,
+    "survivingMutants": 0,
+    "perOperatorScores": {
+      "TransitionTargetMutation": 1,
+      "OutputMutation": 1,
+      "TransitionRemoval": 1,
+      "TransitionAddition": null,
+      "InputMutation": 1,
+      "InitialStateMutation": 1
+    }
+  },
+  "warnings": []
+}

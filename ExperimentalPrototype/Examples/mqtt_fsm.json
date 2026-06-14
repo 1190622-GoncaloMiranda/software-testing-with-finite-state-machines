@@ -1,0 +1,71 @@
+{
+  "name": "MqttClientFSM",
+  "initialState": "Disconnected",
+  "states": [
+    "Disconnected",
+    "Connecting",
+    "Connected",
+    "ConnectRefused",
+    "Subscribing",
+    "Subscribed",
+    "Unsubscribing",
+    "Publishing_QoS1",
+    "Publishing_QoS2_WaitPubRec",
+    "Publishing_QoS2_WaitPubComp",
+    "Receiving_QoS2_WaitPubRel",
+    "PingPending",
+    "Disconnecting",
+    "NetworkError",
+    "SessionExpired"
+  ],
+  "transitions": [
+    { "from": "Disconnected",                 "to": "Connecting",                    "input": "connect",           "output": "CONNECT_sent"           },
+
+    { "from": "Connecting",                   "to": "Connected",                     "input": "connack_ok",        "output": "session_established"    },
+    { "from": "Connecting",                   "to": "ConnectRefused",                "input": "connack_refused",   "output": "connection_refused"     },
+    { "from": "Connecting",                   "to": "Disconnected",                  "input": "timeout",           "output": "connect_timeout"        },
+
+    { "from": "Connected",                    "to": "Subscribing",                   "input": "subscribe",         "output": "SUBSCRIBE_sent"         },
+    { "from": "Connected",                    "to": "Connected",                     "input": "publish_qos0",      "output": "message_delivered"      },
+    { "from": "Connected",                    "to": "Publishing_QoS1",               "input": "publish_qos1",      "output": "PUBLISH_QoS1_sent"      },
+    { "from": "Connected",                    "to": "Publishing_QoS2_WaitPubRec",    "input": "publish_qos2",      "output": "PUBLISH_QoS2_sent"      },
+    { "from": "Connected",                    "to": "PingPending",                   "input": "pingreq",           "output": "PINGREQ_sent"           },
+    { "from": "Connected",                    "to": "Disconnecting",                 "input": "disconnect",        "output": "DISCONNECT_sent"        },
+    { "from": "Connected",                    "to": "Receiving_QoS2_WaitPubRel",     "input": "recv_publish_qos2", "output": "PUBREC_sent"            },
+
+    { "from": "ConnectRefused",               "to": "Disconnected",                  "input": "reset",             "output": "cleared"                },
+
+    { "from": "Subscribing",                  "to": "Subscribed",                    "input": "suback",            "output": "subscription_active"    },
+    { "from": "Subscribing",                  "to": "Connected",                     "input": "error",             "output": "subscribe_failed"       },
+
+    { "from": "Subscribed",                   "to": "Unsubscribing",                 "input": "unsubscribe",       "output": "UNSUBSCRIBE_sent"       },
+    { "from": "Subscribed",                   "to": "Publishing_QoS1",               "input": "publish_qos1",      "output": "PUBLISH_QoS1_sent"      },
+    { "from": "Subscribed",                   "to": "Subscribed",                    "input": "recv_publish_qos0", "output": "message_delivered"      },
+    { "from": "Subscribed",                   "to": "Receiving_QoS2_WaitPubRel",     "input": "recv_publish_qos2", "output": "PUBREC_sent"            },
+    { "from": "Subscribed",                   "to": "Disconnecting",                 "input": "disconnect",        "output": "DISCONNECT_sent"        },
+
+    { "from": "Unsubscribing",                "to": "Connected",                     "input": "unsuback",          "output": "subscription_removed"   },
+    { "from": "Unsubscribing",                "to": "Subscribed",                    "input": "error",             "output": "unsubscribe_failed"     },
+
+    { "from": "Publishing_QoS1",              "to": "Connected",                     "input": "puback",            "output": "publish_complete"       },
+    { "from": "Publishing_QoS1",              "to": "NetworkError",                  "input": "error",             "output": "publish_error"          },
+
+    { "from": "Publishing_QoS2_WaitPubRec",   "to": "Publishing_QoS2_WaitPubComp",  "input": "pubrec",            "output": "PUBREL_sent"            },
+    { "from": "Publishing_QoS2_WaitPubRec",   "to": "NetworkError",                  "input": "error",             "output": "publish_error"          },
+
+    { "from": "Publishing_QoS2_WaitPubComp",  "to": "Connected",                     "input": "pubcomp",           "output": "publish_complete"       },
+    { "from": "Publishing_QoS2_WaitPubComp",  "to": "NetworkError",                  "input": "error",             "output": "publish_error"          },
+
+    { "from": "Receiving_QoS2_WaitPubRel",    "to": "Connected",                     "input": "pubrel",            "output": "PUBCOMP_sent"           },
+    { "from": "Receiving_QoS2_WaitPubRel",    "to": "NetworkError",                  "input": "error",             "output": "receive_error"          },
+
+    { "from": "PingPending",                  "to": "Connected",                     "input": "pingresp",          "output": "session_alive"          },
+    { "from": "PingPending",                  "to": "SessionExpired",                "input": "timeout",           "output": "ping_timeout"           },
+
+    { "from": "Disconnecting",                "to": "Disconnected",                  "input": "disconnect_ack",    "output": "disconnected"           },
+
+    { "from": "NetworkError",                 "to": "Disconnected",                  "input": "reset",             "output": "recovery_reset"         },
+
+    { "from": "SessionExpired",               "to": "Connecting",                    "input": "connect",           "output": "reconnect_initiated"    }
+  ]
+}

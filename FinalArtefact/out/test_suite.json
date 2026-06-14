@@ -1,0 +1,438 @@
+{
+  "metadata": {
+    "fsmName": "TcpConnectionFSM",
+    "generatedAt": "2026-06-14T13:12:16.3440020Z",
+    "coverageStrategy": "TransitionPairCoverage",
+    "reductionStrategy": "MutationScorePreserving",
+    "prioritisationStrategy": "CoverageBasedPrioritization",
+    "totalTestCases": 14
+  },
+  "testCases": [
+    {
+      "id": "TC0031",
+      "priority": 1,
+      "steps": [
+        {
+          "fromState": "CLOSED",
+          "input": "active_open",
+          "expectedOutput": "send_syn",
+          "toState": "SYN_SENT"
+        },
+        {
+          "fromState": "SYN_SENT",
+          "input": "recv_syn_ack",
+          "expectedOutput": "send_ack",
+          "toState": "ESTABLISHED"
+        },
+        {
+          "fromState": "ESTABLISHED",
+          "input": "recv_fin",
+          "expectedOutput": "send_ack",
+          "toState": "CLOSE_WAIT"
+        },
+        {
+          "fromState": "CLOSE_WAIT",
+          "input": "close",
+          "expectedOutput": "send_fin",
+          "toState": "LAST_ACK"
+        },
+        {
+          "fromState": "LAST_ACK",
+          "input": "recv_ack",
+          "expectedOutput": "closed",
+          "toState": "CLOSED"
+        },
+        {
+          "fromState": "CLOSED",
+          "input": "passive_open",
+          "expectedOutput": "listening",
+          "toState": "LISTEN"
+        }
+      ]
+    },
+    {
+      "id": "TC0030",
+      "priority": 2,
+      "steps": [
+        {
+          "fromState": "CLOSED",
+          "input": "passive_open",
+          "expectedOutput": "listening",
+          "toState": "LISTEN"
+        },
+        {
+          "fromState": "LISTEN",
+          "input": "recv_syn",
+          "expectedOutput": "send_syn_ack",
+          "toState": "SYN_RECEIVED"
+        },
+        {
+          "fromState": "SYN_RECEIVED",
+          "input": "close",
+          "expectedOutput": "send_fin",
+          "toState": "FIN_WAIT_1"
+        },
+        {
+          "fromState": "FIN_WAIT_1",
+          "input": "recv_fin",
+          "expectedOutput": "send_ack",
+          "toState": "CLOSING"
+        },
+        {
+          "fromState": "CLOSING",
+          "input": "recv_ack",
+          "expectedOutput": "wait_timeout",
+          "toState": "TIME_WAIT"
+        },
+        {
+          "fromState": "TIME_WAIT",
+          "input": "timeout",
+          "expectedOutput": "closed",
+          "toState": "CLOSED"
+        }
+      ]
+    },
+    {
+      "id": "TC0012",
+      "priority": 3,
+      "steps": [
+        {
+          "fromState": "CLOSED",
+          "input": "active_open",
+          "expectedOutput": "send_syn",
+          "toState": "SYN_SENT"
+        },
+        {
+          "fromState": "SYN_SENT",
+          "input": "recv_syn",
+          "expectedOutput": "send_syn_ack",
+          "toState": "SYN_RECEIVED"
+        },
+        {
+          "fromState": "SYN_RECEIVED",
+          "input": "recv_ack",
+          "expectedOutput": "connection_up",
+          "toState": "ESTABLISHED"
+        }
+      ]
+    },
+    {
+      "id": "TC0023",
+      "priority": 4,
+      "steps": [
+        {
+          "fromState": "CLOSED",
+          "input": "active_open",
+          "expectedOutput": "send_syn",
+          "toState": "SYN_SENT"
+        },
+        {
+          "fromState": "SYN_SENT",
+          "input": "recv_syn_ack",
+          "expectedOutput": "send_ack",
+          "toState": "ESTABLISHED"
+        },
+        {
+          "fromState": "ESTABLISHED",
+          "input": "close",
+          "expectedOutput": "send_fin",
+          "toState": "FIN_WAIT_1"
+        },
+        {
+          "fromState": "FIN_WAIT_1",
+          "input": "recv_fin_ack",
+          "expectedOutput": "send_ack",
+          "toState": "TIME_WAIT"
+        }
+      ]
+    },
+    {
+      "id": "TC0028",
+      "priority": 5,
+      "steps": [
+        {
+          "fromState": "CLOSED",
+          "input": "passive_open",
+          "expectedOutput": "listening",
+          "toState": "LISTEN"
+        },
+        {
+          "fromState": "LISTEN",
+          "input": "recv_syn",
+          "expectedOutput": "send_syn_ack",
+          "toState": "SYN_RECEIVED"
+        },
+        {
+          "fromState": "SYN_RECEIVED",
+          "input": "close",
+          "expectedOutput": "send_fin",
+          "toState": "FIN_WAIT_1"
+        },
+        {
+          "fromState": "FIN_WAIT_1",
+          "input": "recv_ack",
+          "expectedOutput": "wait_fin",
+          "toState": "FIN_WAIT_2"
+        },
+        {
+          "fromState": "FIN_WAIT_2",
+          "input": "recv_fin",
+          "expectedOutput": "send_ack",
+          "toState": "TIME_WAIT"
+        },
+        {
+          "fromState": "TIME_WAIT",
+          "input": "timeout",
+          "expectedOutput": "closed",
+          "toState": "CLOSED"
+        }
+      ]
+    },
+    {
+      "id": "TC0002",
+      "priority": 6,
+      "steps": [
+        {
+          "fromState": "CLOSED",
+          "input": "passive_open",
+          "expectedOutput": "listening",
+          "toState": "LISTEN"
+        },
+        {
+          "fromState": "LISTEN",
+          "input": "close",
+          "expectedOutput": "stop_listen",
+          "toState": "CLOSED"
+        }
+      ]
+    },
+    {
+      "id": "TC0005",
+      "priority": 7,
+      "steps": [
+        {
+          "fromState": "CLOSED",
+          "input": "active_open",
+          "expectedOutput": "send_syn",
+          "toState": "SYN_SENT"
+        },
+        {
+          "fromState": "SYN_SENT",
+          "input": "close",
+          "expectedOutput": "abort",
+          "toState": "CLOSED"
+        }
+      ]
+    },
+    {
+      "id": "TC0008",
+      "priority": 8,
+      "steps": [
+        {
+          "fromState": "CLOSED",
+          "input": "passive_open",
+          "expectedOutput": "listening",
+          "toState": "LISTEN"
+        },
+        {
+          "fromState": "LISTEN",
+          "input": "close",
+          "expectedOutput": "stop_listen",
+          "toState": "CLOSED"
+        },
+        {
+          "fromState": "CLOSED",
+          "input": "passive_open",
+          "expectedOutput": "listening",
+          "toState": "LISTEN"
+        }
+      ]
+    },
+    {
+      "id": "TC0014",
+      "priority": 9,
+      "steps": [
+        {
+          "fromState": "CLOSED",
+          "input": "active_open",
+          "expectedOutput": "send_syn",
+          "toState": "SYN_SENT"
+        },
+        {
+          "fromState": "SYN_SENT",
+          "input": "close",
+          "expectedOutput": "abort",
+          "toState": "CLOSED"
+        },
+        {
+          "fromState": "CLOSED",
+          "input": "passive_open",
+          "expectedOutput": "listening",
+          "toState": "LISTEN"
+        }
+      ]
+    },
+    {
+      "id": "TC0006",
+      "priority": 10,
+      "steps": [
+        {
+          "fromState": "CLOSED",
+          "input": "passive_open",
+          "expectedOutput": "listening",
+          "toState": "LISTEN"
+        },
+        {
+          "fromState": "LISTEN",
+          "input": "recv_syn",
+          "expectedOutput": "send_syn_ack",
+          "toState": "SYN_RECEIVED"
+        },
+        {
+          "fromState": "SYN_RECEIVED",
+          "input": "recv_ack",
+          "expectedOutput": "connection_up",
+          "toState": "ESTABLISHED"
+        }
+      ]
+    },
+    {
+      "id": "TC0016",
+      "priority": 11,
+      "steps": [
+        {
+          "fromState": "CLOSED",
+          "input": "passive_open",
+          "expectedOutput": "listening",
+          "toState": "LISTEN"
+        },
+        {
+          "fromState": "LISTEN",
+          "input": "recv_syn",
+          "expectedOutput": "send_syn_ack",
+          "toState": "SYN_RECEIVED"
+        },
+        {
+          "fromState": "SYN_RECEIVED",
+          "input": "recv_ack",
+          "expectedOutput": "connection_up",
+          "toState": "ESTABLISHED"
+        },
+        {
+          "fromState": "ESTABLISHED",
+          "input": "close",
+          "expectedOutput": "send_fin",
+          "toState": "FIN_WAIT_1"
+        }
+      ]
+    },
+    {
+      "id": "TC0017",
+      "priority": 12,
+      "steps": [
+        {
+          "fromState": "CLOSED",
+          "input": "passive_open",
+          "expectedOutput": "listening",
+          "toState": "LISTEN"
+        },
+        {
+          "fromState": "LISTEN",
+          "input": "recv_syn",
+          "expectedOutput": "send_syn_ack",
+          "toState": "SYN_RECEIVED"
+        },
+        {
+          "fromState": "SYN_RECEIVED",
+          "input": "recv_ack",
+          "expectedOutput": "connection_up",
+          "toState": "ESTABLISHED"
+        },
+        {
+          "fromState": "ESTABLISHED",
+          "input": "recv_fin",
+          "expectedOutput": "send_ack",
+          "toState": "CLOSE_WAIT"
+        }
+      ]
+    },
+    {
+      "id": "TC0027",
+      "priority": 13,
+      "steps": [
+        {
+          "fromState": "CLOSED",
+          "input": "passive_open",
+          "expectedOutput": "listening",
+          "toState": "LISTEN"
+        },
+        {
+          "fromState": "LISTEN",
+          "input": "recv_syn",
+          "expectedOutput": "send_syn_ack",
+          "toState": "SYN_RECEIVED"
+        },
+        {
+          "fromState": "SYN_RECEIVED",
+          "input": "close",
+          "expectedOutput": "send_fin",
+          "toState": "FIN_WAIT_1"
+        },
+        {
+          "fromState": "FIN_WAIT_1",
+          "input": "recv_fin_ack",
+          "expectedOutput": "send_ack",
+          "toState": "TIME_WAIT"
+        },
+        {
+          "fromState": "TIME_WAIT",
+          "input": "timeout",
+          "expectedOutput": "closed",
+          "toState": "CLOSED"
+        }
+      ]
+    },
+    {
+      "id": "TC0033",
+      "priority": 14,
+      "steps": [
+        {
+          "fromState": "CLOSED",
+          "input": "passive_open",
+          "expectedOutput": "listening",
+          "toState": "LISTEN"
+        },
+        {
+          "fromState": "LISTEN",
+          "input": "recv_syn",
+          "expectedOutput": "send_syn_ack",
+          "toState": "SYN_RECEIVED"
+        },
+        {
+          "fromState": "SYN_RECEIVED",
+          "input": "close",
+          "expectedOutput": "send_fin",
+          "toState": "FIN_WAIT_1"
+        },
+        {
+          "fromState": "FIN_WAIT_1",
+          "input": "recv_fin_ack",
+          "expectedOutput": "send_ack",
+          "toState": "TIME_WAIT"
+        },
+        {
+          "fromState": "TIME_WAIT",
+          "input": "timeout",
+          "expectedOutput": "closed",
+          "toState": "CLOSED"
+        },
+        {
+          "fromState": "CLOSED",
+          "input": "passive_open",
+          "expectedOutput": "listening",
+          "toState": "LISTEN"
+        }
+      ]
+    }
+  ]
+}

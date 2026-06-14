@@ -1,0 +1,16 @@
+{
+  "fsmModel": "../ExperimentalPrototype/Examples/tcp_fsm.json",
+  "outputDirectory": "out/",
+  "coverage": {
+    "type": "TransitionPairCoverage",
+    "sequenceLength": 3
+  },
+  "reduction": {
+    "type": "MutationScorePreserving",
+    "fsmSizeThreshold": 50,
+    "similarityThreshold": 0.8
+  },
+  "prioritisation": {
+    "type": "CoverageBased"
+  }
+}
