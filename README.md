@@ -67,3 +67,7 @@ The repository includes a GitHub Actions workflow at `.github/workflows/generate
 ## Notes
 
 Each project has its own dedicated README with architecture, workflow diagrams, configuration details, supported strategies, and output formats.
+
+## License
+
+This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
